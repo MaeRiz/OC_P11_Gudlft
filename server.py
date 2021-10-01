@@ -1,4 +1,5 @@
 import json
+from datetime import date, datetime
 from flask import Flask,render_template,request,redirect,flash,url_for
 
 
@@ -28,7 +29,7 @@ def index():
 def showSummary():
     try:
         club = [club for club in clubs if club['email'] == request.form['email']][0]
-        return render_template('welcome.html',club=club,competitions=competitions)
+        return render_template('welcome.html',club=club,competitions=competitions, date=str(datetime.now()))
     except IndexError:
         return render_template('index.html', error_message="Unknown email adress !")
 
@@ -37,11 +38,11 @@ def showSummary():
 def book(competition,club):
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
-    if foundClub and foundCompetition:
+    if foundClub and foundCompetition and foundCompetition['date'] >= str(datetime.now()):
         return render_template('booking.html',club=foundClub,competition=foundCompetition)
     else:
         flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return render_template('welcome.html', club=club, competitions=competitions, date=str(datetime.now()))
 
 
 @app.route('/purchasePlaces',methods=['POST'])
