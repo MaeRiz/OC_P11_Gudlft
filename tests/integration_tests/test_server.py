@@ -2,26 +2,6 @@ from tests.unit_tests.test_server import server
 from tests.unit_tests.conftest import client
 
 
-
-def test_unknown_email_adress(client):
-	response = client.post('/showSummary', data={"email": "unknown@fakeadress.com"})
-	assert response.status_code == 200
-	assert "Unknown email adress !" in response.data.decode()
-	
-
-def test_correct_email_adress(client):
-	email = "josh@twentyonepilots.com"
-	response = client.post('/showSummary', data={"email": email})
-	assert response.status_code == 200
-	assert ("Welcome, " + email) in response.data.decode()
-
-
-def test_oudated_comp(client):
-	response = client.get('/book/Bandito/TOP-official')
-	assert "Something went wrong-please try again" in response.data.decode()
-	assert response.status_code == 200
-
-
 def test_futur_comp(client):
 	comp = server.competitions[1]
 	response = client.get('/book/'+comp['name']+'/TOP-official')
